@@ -3,9 +3,14 @@ name = "rustvrty"
 version = "0.1.0"
 edition = "2021"
 
+[workspace]
+members = [".", "entity", "migration"]
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+entity = { path = "entity" }
+migration = { path = "migration" }
 argon2 = "0.4.1"
 rand_core = {version = "0.6.4", features = ["getrandom"]}
 sea-orm = { version = "0.10.2", features = [ "sqlx-mysql", "runtime-tokio-native-tls", "macros"  ] }
