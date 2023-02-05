@@ -1,8 +1,10 @@
-mod sec;
 mod db;
-pub use crate::sec::{login, User};
-
+mod sec;
+use crate::db::connect;
+pub use crate::sec::{login, AuthType, User};
 use migration::{Migrator, MigratorTrait};
 
-let connection = sea_orm::Database::connect(&database_url).await?;
-Migrator::up(&connection, None).await?;
+pub async fn migration() {
+    let connection = connect().await.unwrap();
+    Migrator::up(&connection, None).await.unwrap();
+}

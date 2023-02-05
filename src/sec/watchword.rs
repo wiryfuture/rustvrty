@@ -1,3 +1,4 @@
+use crate::db::connect;
 use argon2::{
     password_hash::{PasswordHasher, SaltString},
     Argon2, PasswordHash, PasswordVerifier,
@@ -6,8 +7,8 @@ use rand_core::OsRng;
 use sea_orm::prelude::Uuid;
 
 pub struct User {
-    name: String,
-    password: String,
+    pub username: String,
+    pub password: String,
 }
 
 struct UuidPasswordHash {
@@ -31,14 +32,20 @@ fn verify_password_hashes(
         .is_ok())
 }
 
-fn get_user(name: String) -> Result<UuidPasswordHash, ()> {
-    
-    Err(())
+async fn get_user(username: String) -> Result<UuidPasswordHash, ()> {
+    let db_connection = connect().await;
+    match db_connection {
+        Ok(connection) => {
+            
+        }
+        Err(error) => eprintln!("{error}"),
+    }
+    todo! {};
 }
 
 pub async fn login(user: User) -> Result<bool, ()> {
     // get user id
-    let db_user = get_user(user.name)?;
+    let db_user = get_user(user.username).await?;
     let authed = verify_password_hashes(user.password, &db_user.hash);
 
     Ok(false)

@@ -1,20 +1,16 @@
-use futures::executor::block_on;
-use rustvrty::{login, User};
+use rustvrty::{login, migration, AuthType, User};
 use std::io::stdin;
 
-fn main() -> Result<(), argon2::password_hash::Error> {
-    block_on(async_main())
-}
-
-async fn async_main() -> Result<(), argon2::password_hash::Error> {
+#[tokio::main]
+async fn main() -> Result<(), argon2::password_hash::Error> {
+    migration().await;
+    println!("Enter username");
+    let mut username = String::new();
+    stdin().read_line(&mut username).expect("readline");
     println!("Enter password");
-    let mut input = String::new();
-    stdin().read_line(&mut input).expect("readline");
-    let res = salt_and_hash_to_string(&input)?;
-    println!("Enter password again");
-    input = String::new();
-    stdin().read_line(&mut input).expect("readline");
-    let are_the_same = verify_password_hashes(input, &res)?;
-    dbg!(&are_the_same);
+    let mut password = String::new();
+    stdin().read_line(&mut password).expect("readline");
+    let username_and_password = AuthType::Watchword(User { username, password });
+    dbg! {login(username_and_password).await.unwrap()};
     Ok(())
 }
