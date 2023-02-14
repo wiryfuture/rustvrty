@@ -1,3 +1,4 @@
+use crate::Uuid::Uuid;
 use sea_orm_migration::prelude::*;
 
 #[derive(DeriveMigrationName)]
@@ -12,13 +13,13 @@ impl MigrationTrait for Migration {
                     .table(Auth::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(Auth::Id)
-                            .custom(Uuid::Uuid)
+                        ColumnDef::new(Auth::UserId)
+                            .custom(Uuid)
                             .not_null()
                             .primary_key(),
                     )
                     .col(ColumnDef::new(Auth::Username).string().not_null())
-                    .col(ColumnDef::new(Auth::Hash).text())
+                    .col(ColumnDef::new(Auth::PhcString).text())
                     .to_owned(),
             )
             .await
@@ -33,14 +34,9 @@ impl MigrationTrait for Migration {
 
 /// Learn more at https://docs.rs/sea-query#iden
 #[derive(Iden)]
-enum Auth {
+pub enum Auth {
     Table,
-    Id,
+    UserId,
     Username,
-    Hash,
-}
-
-#[derive(Iden)]
-pub enum Uuid {
-    Uuid,
+    PhcString,
 }
